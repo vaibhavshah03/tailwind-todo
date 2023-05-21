@@ -1,0 +1,81 @@
+{
+    "search.exclude": {
+      "**/.yarn": true,
+      "**/.pnp.*": true,
+      "**/coverage": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.build": true,
+      "**/.gh-pages": true
+    },
+    "breadcrumbs.enabled": true,
+    // editor
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.smoothScrolling": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.detectIndentation": true,
+    "editor.fontLigatures": false,
+    "editor.rulers": [100],
+    "editor.snippetSuggestions": "top",
+    "editor.wordBasedSuggestions": false,
+    "editor.suggest.localityBonus": true,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.renderWhitespace": "boundary",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.format": true
+      // "source.organizeImports": true
+    },
+    // misc
+    "explorer.confirmDragAndDrop": false,
+    "files.defaultLanguage": "{activeEditorLanguage}",
+    "files.autoSave": "off", // let this be off,
+    "npm.runSilent": true,
+    "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+    // eslint
+    "eslint.nodePath": ".yarn/sdks",
+    "eslint.validate": ["javascript", "typescript"],
+    "eslint.alwaysShowStatus": true,
+    // javascript
+    "javascript.validate.enable": false,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "javascript.preferences.importModuleSpecifier": "relative",
+    "javascript.preferences.importModuleSpecifierEnding": "minimal",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.suggestSelection": "recentlyUsed",
+      "editor.suggest.showKeywords": false
+    },
+    // typescript
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.tsdk": ".yarn/sdks/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifierEnding": "minimal",
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.suggestSelection": "recentlyUsed",
+      "editor.suggest.showKeywords": false
+    },
+    // html
+    "html.format.wrapAttributes": "aligned-multiple",
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "cSpell.words": [
+      "hgetall",
+      "luxon",
+      "Markdata",
+      "Marksheet",
+      "Marksheets",
+      "OSCE",
+      "PRESTART",
+      "QBANK",
+      "quesmed",
+      "SENDGRID",
+      "striked",
+      "todos"
+    ]
+  }
