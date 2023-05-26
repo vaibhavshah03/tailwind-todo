@@ -2,7 +2,7 @@ import cx from "clsx";
 import SideBar from "./SideBar";
 import Header from "./Header";
 
-export default function Layout({ children }: React.ComponentProps<"main">) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <main
       className={cx(

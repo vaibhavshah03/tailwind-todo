@@ -1,8 +1,11 @@
 import { tags, TODO_TAGS } from "../../config";
 import cx from "clsx";
-import useTodoFunctions, { ITodo } from "../Todo/todoFunctions";
+import { useTodo } from "../../store";
+import { ITodo } from "../../store/todo/reducer";
 
 export const TodoModal = () => {
+  const { dispatch, state } = useTodo();
+
   const active = [
     TODO_TAGS.WORK,
     TODO_TAGS.STUDY,
@@ -10,26 +13,38 @@ export const TodoModal = () => {
     TODO_TAGS.FAMILY,
   ];
 
+  const onSubmit = () => {
+    if (state.mode === "EDIT") {
+      dispatch({ type: "UPDATE_TODO" });
+    } else {
+      dispatch({ type: "ADD_TODO" });
+    }
+  };
+
+  const onChange = (payload: Partial<ITodo>) => {
+    dispatch({ type: "UPDATE_CURRENT_TODO", payload });
+  };
+
   return (
     <div className="">
       <div className="flex justify-between">
         <button className="text-brown text-sm">Cancel</button>
         <button
-          // onClick={}
+          onClick={onSubmit}
           className="bg-brown text-white text-sm px-10 py-2 rounded-[10px]"
         >
-          Add
+          {state.mode === "EDIT" ? "Update" : " Add"}
         </button>
       </div>
       <section className="flex flex-col space-y-4 mt-6">
         <fieldset>
           <label className="text-brown font-semibold text-lg">Title</label>
           <input
-            // value={todoTitleText}
+            value={state.todo.title}
             type="text"
             placeholder="add a title ..."
             className="text-brown border-none placeholder-brown focus:outline-none block w-full rounded-lg sm:text-sm py-3 px-3 bg-brown/5 mt-1"
-            // onChange={(e) => setTodoTitleText(e.target.value)}
+            onChange={(e) => onChange({ title: e.target.value })}
           ></input>
         </fieldset>
         <fieldset>
@@ -37,11 +52,11 @@ export const TodoModal = () => {
             Description
           </label>
           <textarea
-            // value={todoDescText}
+            value={state.todo.desc}
             rows={5}
             placeholder="add a description ..."
             className="form-textarea border-none text-brown placeholder-brown focus:outline-none block w-full rounded-lg sm:text-sm py-3 px-3 bg-brown/5 mt-1"
-            // onChange={(e) => setTodoDescText(e.target.value)}
+            onChange={(e) => onChange({ desc: e.target.value })}
           ></textarea>
         </fieldset>
       </section>
