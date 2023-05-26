@@ -1,7 +1,7 @@
-import { tags, TODO_TAGS } from "../../config";
+import { tags } from "../../config";
 import cx from "clsx";
 import { useTodo } from "../../store";
-import { ITodo } from "../../store/todo/reducer";
+import { ITodo, ITodoTag, TODO_TAGS } from "../../store/todo/reducer";
 
 export const TodoModal = () => {
   const { dispatch, state } = useTodo();
@@ -23,6 +23,17 @@ export const TodoModal = () => {
 
   const onChange = (payload: Partial<ITodo>) => {
     dispatch({ type: "UPDATE_CURRENT_TODO", payload });
+  };
+
+  const addActiveTag = (selectedTag: ITodoTag) => {
+    let currentTags = [...(state.todo.tags ?? [])];
+
+    if (currentTags.includes(selectedTag)) {
+      currentTags = currentTags.filter((i) => i !== selectedTag);
+    } else {
+      currentTags.push(selectedTag);
+    }
+    onChange({ tags: currentTags });
   };
 
   return (
@@ -67,8 +78,9 @@ export const TodoModal = () => {
         {tags.map((tag) => (
           <button
             key={tag.label}
+            onClick={(e) => addActiveTag(tag.label)}
             className={cx("flex items-center rounded-xl space-x-2 py-2 px-4", {
-              "bg-brown/5 ": active.includes(tag.label),
+              "bg-brown/5 ": state.todo.tags?.includes(tag.label),
             })}
           >
             <div className={cx("w-8 h-8 rounded-full", tag.className)}></div>

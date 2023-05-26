@@ -2,7 +2,8 @@ import cx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { useTodo } from "../store";
-import { ITodo } from "../store/todo/reducer";
+import { ITodo, TODO_TAGS } from "../store/todo/reducer";
+import { tagsClass } from "../config";
 
 type Props = {
   data: ITodo;
@@ -10,21 +11,33 @@ type Props = {
 export default function Card({ data }: Props) {
   const { title, desc } = data;
   const [toggle, setToggle] = useState<boolean>(false);
-  const { dispatch } = useTodo();
+  const { dispatch, state } = useTodo();
 
   const onDelete = () => {
     dispatch({ type: "DELETE_TODO", payload: data.id });
+    setToggle(!toggle);
   };
 
   const onEdit = () => {
     dispatch({ type: "SET_PRE_EDIT", payload: data.id });
+    setToggle(!toggle);
+  };
+  const onCompleted = () => {
+    dispatch({ type: "UPDATE_COMPLETED", payload: data.id });
   };
 
   return (
     <>
       <div className="flex flex-col h-fit w-full bg-yellow px-5 py-4 space-y-4 rounded-sm ">
         <div className="relative flex flex-row items-center justify-between">
-          <span className="text-brown font-semibold">{title}</span>
+          <span
+            className={cx(
+              "text-brown font-semibold",
+              data.completed ? "line-through decoration-brown decoration-2" : ""
+            )}
+          >
+            {title}
+          </span>
           <button
             type="button"
             className=""
@@ -45,7 +58,7 @@ export default function Card({ data }: Props) {
               className={cx(
                 "absolute right-0 top-4",
                 "rounded-md bg-white",
-                "flex z-20 mt-2 w-full max-w-[12rem] h-fit shadow-lg ocus:outline-none"
+                "flex z-20 mt-2 w-full max-w-[12rem] h-fit shadow-lg focus:outline-none"
               )}
               role="menu"
               aria-orientation="vertical"
@@ -76,18 +89,35 @@ export default function Card({ data }: Props) {
             </div>
           )}
         </div>
-        <span className="text-brown text-sm tracking-wide leading-6 font-[350]">
+        <span
+          className={cx(
+            "text-brown text-sm tracking-wide leading-6 font-[350]",
+            data.completed
+              ? "line-through decoration-brown decoration-[1.5px]"
+              : ""
+          )}
+        >
           {desc}
         </span>
         <div className="flex justify-between ">
           <div className="flex gap-2">
-            <button className="p-3.5 bg-pink rounded-full"></button>
-            <button className="p-3.5 bg-blue rounded-full"></button>
-            <button className="p-3.5 bg-purple rounded-full"></button>
+            {data.tags.map((tag) => (
+              <button
+                key={tag}
+                className={cx(
+                  "p-3.5 rounded-full",
+                  tagsClass[tag as TODO_TAGS]
+                )}
+              ></button>
+            ))}
           </div>
 
           <div className="flex gap-1.5 items-center">
-            <input className="my-checkbox" type="checkbox"></input>{" "}
+            <input
+              className="my-checkbox"
+              type="checkbox"
+              onClick={onCompleted}
+            ></input>{" "}
             <label className="text-brown text-sm font-medium">Done</label>
           </div>
         </div>{" "}

@@ -1,8 +1,18 @@
+export enum TODO_TAGS {
+  WORK = "WORK",
+  STUDY = "STUDY",
+  ENTERTAINMENT = "ENTERTAINMENT",
+  FAMILY = "FAMILY",
+}
+
+export type ITodoTag = TODO_TAGS | keyof typeof TODO_TAGS;
+
 export type ITodo = {
   id: string;
   title: string;
   desc: string;
   completed: boolean;
+  tags: ITodoTag[];
 };
 
 export type TodoState = {
@@ -23,7 +33,8 @@ type Action =
   | { type: "SET_PRE_EDIT"; payload: ITodo["id"] }
   | { type: "SET_PRE_ADD" }
   | { type: "UPDATE_CURRENT_TODO"; payload: TodoState["todo"] }
-  | { type: "SET_LOADING"; payload: TodoState["loading"] };
+  | { type: "SET_LOADING"; payload: TodoState["loading"] }
+  | { type: "UPDATE_COMPLETED"; payload: ITodo["id"] };
 
 export const reducer = (state: TodoState, action: Action) => {
   switch (action.type) {
@@ -34,15 +45,24 @@ export const reducer = (state: TodoState, action: Action) => {
       };
 
     case "ADD_TODO":
-      const newTodo: ITodo = {
-        ...(state.todo as ITodo),
-        id: new Date().toISOString(),
-        completed: false,
-      };
+      const data = state.todos.find(
+        (item) => item.title.toLowerCase() === state.todo?.title?.toLowerCase()
+      );
+      if (!data) {
+        const newTodo: ITodo = {
+          ...(state.todo as ITodo),
+          id: new Date().toISOString(),
+          completed: false,
+        };
+        return {
+          ...state,
+          todos: [...state.todos, newTodo],
+          modal: false,
+        };
+      }
+      alert("exist");
       return {
         ...state,
-        todos: [...state.todos, newTodo],
-        modal: false,
       };
 
     case "DELETE_TODO":
@@ -57,6 +77,7 @@ export const reducer = (state: TodoState, action: Action) => {
         todos: state.todos.map((i) =>
           i.id == state.todo.id ? { ...i, ...state.todo } : i
         ),
+        modal: false,
       };
 
     case "SET_MODE":
@@ -74,7 +95,7 @@ export const reducer = (state: TodoState, action: Action) => {
     case "SET_PRE_ADD":
       return {
         ...state,
-        todo: { title: "", desc: "" } as Partial<ITodo>,
+        todo: { title: "", desc: "", tags: [] } as Partial<ITodo>,
         mode: "ADD" as TodoState["mode"],
         modal: true,
       };
@@ -100,7 +121,13 @@ export const reducer = (state: TodoState, action: Action) => {
         ...state,
         loading: action.payload,
       };
-
+    case "UPDATE_COMPLETED":
+      return {
+        ...state,
+        todos: state.todos.map((i) =>
+          i.id == action.payload ? { ...i, completed: !i.completed } : i
+        ),
+      };
     default:
       return {
         ...state,
