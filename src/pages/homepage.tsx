@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <Layout>
       <div className="grid gap-4 lg:grid-cols-2 grid-cols-1">
-        {state.todos.map((todo) => (
+        {state.todoDisplay.map((todo) => (
           <Card data={todo} key={todo.id} />
         ))}
       </div>

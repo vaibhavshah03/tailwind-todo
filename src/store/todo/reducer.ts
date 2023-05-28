@@ -17,6 +17,8 @@ export type ITodo = {
 
 export type TodoState = {
   todos: ITodo[];
+  filters: { tags: ITodoTag[]; text: string; completed: boolean };
+  todoDisplay: ITodo[];
   loading: boolean;
   modal: boolean;
   mode: "EDIT" | "ADD";
@@ -24,7 +26,7 @@ export type TodoState = {
 };
 
 type Action =
-  | { type: "SET_TODO"; payload: ITodo[] }
+  | { type: "SET_TODO"; payload: ITodoTag[] }
   | { type: "ADD_TODO" }
   | { type: "DELETE_TODO"; payload: string }
   | { type: "UPDATE_TODO" }
@@ -34,14 +36,14 @@ type Action =
   | { type: "SET_PRE_ADD" }
   | { type: "UPDATE_CURRENT_TODO"; payload: TodoState["todo"] }
   | { type: "SET_LOADING"; payload: TodoState["loading"] }
-  | { type: "UPDATE_COMPLETED"; payload: ITodo["id"] };
+  | { type: "UPDATE_COMPLETED"; payload: ITodo["id"] }
+  | { type: "FILTER_TODO"; payload: Partial<TodoState["filters"]> };
 
 export const reducer = (state: TodoState, action: Action) => {
   switch (action.type) {
     case "SET_TODO":
       return {
         ...state,
-        todos: [...action.payload],
       };
 
     case "ADD_TODO":
@@ -58,6 +60,7 @@ export const reducer = (state: TodoState, action: Action) => {
           ...state,
           todos: [...state.todos, newTodo],
           modal: false,
+          todoDisplay: [...state.todos],
         };
       }
       alert("exist");
@@ -128,6 +131,39 @@ export const reducer = (state: TodoState, action: Action) => {
           i.id == action.payload ? { ...i, completed: !i.completed } : i
         ),
       };
+    case "FILTER_TODO":
+      const newFilters = Object.assign(
+        {},
+        state.filters,
+        action.payload
+      ) as TodoState["filters"];
+      let newTodos: ITodo[] = [...state.todos];
+
+      if (newFilters.completed) {
+        newTodos = newTodos.filter((i) => i.completed);
+      }
+      if (newFilters.text) {
+        newTodos = newTodos.filter((i) =>
+          i.title.includes(action.payload.text as string)
+        );
+      }
+      if (newFilters.tags.length) {
+        let newData: ITodo[] = [];
+        newTodos.forEach((i) =>
+          i.tags.forEach((tag) => {
+            if (action.payload.tags?.includes(tag)) {
+              newData.push(i);
+            }
+          })
+        );
+        newTodos = [...newData];
+      }
+      return {
+        ...state,
+        filters: Object.assign({}, newFilters),
+        todoDisplay: [...newTodos],
+      };
+
     default:
       return {
         ...state,
